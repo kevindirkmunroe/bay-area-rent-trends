@@ -43,8 +43,6 @@ export const getAffordabilityScore = async(req: Request, resp: Response) => {
             query += " AND city = $2  AND state = $3"
         }
 
-        console.log(`isAllCities= ${isAllCities} query= ${query}`);
-
          const result = isAllCities? await pool.query(query, [Number(income)]) : await pool.query(query, [Number(income), city, state]);
          if(result.rows.length == 0){
              return resp.status(404).json({
@@ -52,13 +50,11 @@ export const getAffordabilityScore = async(req: Request, resp: Response) => {
              })
          }
 
-         console.log(`result set length: ${result.rows.length}`);
          if(isAllCities){
              return resp.json(result.rows);
          }
          return resp.json(result.rows[0]);
     }catch(e){
-        console.error('Affordability error', e);
         return resp.status(500).json({
             error: 'Internal server error'
         })
